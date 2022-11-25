@@ -38,7 +38,11 @@ app.post('/add', function(req, res) {
 	db.collection('config').findOne({name : 'totalcount'}, function(err, result){
 		var mycount = result.count;
 		db.collection('login').insertOne({ _id : (mycount+1), email:req.body.email, password: req.body.password}, function(err, result) {
-			console.log("save complete...");
-			res.send("send complete...");
+			db.collection('config').updateOne({name:'totalcount'}, { $inc: {count:1}}, function(err, result) {
+				if (err) return console.log(err)
+				console.log("save complete...");
+				res.send("send complete...");
+			});
+		})
 	})
 });
